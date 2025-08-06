@@ -1,8 +1,0 @@
-# Files to ignore during deployment
-copy_publish.sh
-.publish_ignore
-CLAUDE.md
-prompts/
-*.tmp
-*.log
-.DS_Store
