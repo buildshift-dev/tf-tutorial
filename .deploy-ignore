@@ -1,0 +1,7 @@
+# Files to ignore during deployment
+copy_deploy.sh
+CLAUDE.md
+prompts/
+*.tmp
+*.log
+.DS_Store

@@ -1,0 +1,52 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Create IAM role for Terraform Lambda tutorial'
+
+Parameters:
+  RoleName:
+    Type: String
+    Default: TerraformLambdaRole
+    Description: Name of the IAM role for Lambda function
+    MinLength: 1
+    MaxLength: 64
+    AllowedPattern: '^[a-zA-Z0-9+=,.@_-]+$'
+    ConstraintDescription: Must be a valid IAM role name
+
+Resources:
+  LambdaExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Ref RoleName
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
+        - arn:aws:iam::aws:policy/AmazonS3FullAccess
+      Tags:
+        - Key: Purpose
+          Value: TerraformTutorial
+        - Key: CreatedBy
+          Value: CloudFormation
+
+Outputs:
+  RoleName:
+    Description: Name of the created IAM role
+    Value: !Ref LambdaExecutionRole
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleName'
+  
+  RoleArn:
+    Description: ARN of the created IAM role
+    Value: !GetAtt LambdaExecutionRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleArn'
+  
+  StackName:
+    Description: Name of this CloudFormation stack
+    Value: !Ref AWS::StackName
+    Export:
+      Name: !Sub '${AWS::StackName}-StackName'

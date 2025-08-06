@@ -1,0 +1,21 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+.terraform/
+.terraform.lock.hcl
+
+# Lambda ZIP files
+lambda_function.zip
+
+# Test response files
+response*.json
+downloaded-file.json
+
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

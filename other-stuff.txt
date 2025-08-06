@@ -1,0 +1,19 @@
+Check Your Lab Permissions:
+
+  # Test if you can create roles
+  aws iam create-role --role-name test-role --assume-role-policy-document '{
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": {"Service": "lambda.amazonaws.com"},
+        "Action": "sts:AssumeRole"
+      }
+    ]
+  }'
+
+  # Clean up test
+  aws iam delete-role --role-name test-role
+
+  Lambda always requires an explicit role - it's an AWS security requirement, not a Terraform
+  limitation! 🔒

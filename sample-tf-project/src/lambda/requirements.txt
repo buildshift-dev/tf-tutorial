@@ -1,0 +1,5 @@
+# AWS SDK for Python
+boto3>=1.26.0
+
+# For local testing (optional)
+# moto>=4.0.0  # AWS service mocking for tests
