@@ -1,5 +1,5 @@
 # Files to ignore during deployment
-copy_deploy.sh
+copy_publish.sh
 CLAUDE.md
 prompts/
 *.tmp
