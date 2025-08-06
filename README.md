@@ -1,5 +1,7 @@
 # Terraform AWS Lambda + S3 Tutorials
 
+⚠️ **Security Disclaimer**: The security practices depicted in this tutorial may not represent production best practices. The goal is to demonstrate Terraform concepts and ensure compatibility with A Cloud Guru sandbox environments. For production deployments, please review and implement appropriate security measures.
+
 This repository contains **two complete Terraform tutorials** that demonstrate how to create AWS Lambda functions with S3 integration. Both tutorials create the same functionality but use different approaches to teach different aspects of Terraform.
 
 ## 🎯 What You'll Build
