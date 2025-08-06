@@ -185,6 +185,32 @@ install_additional_tools() {
     # Install zip/unzip (usually pre-installed, but make sure)
     sudo yum install -y zip unzip
     print_success "zip/unzip tools verified"
+    
+    # Install make utility
+    if command -v make &> /dev/null; then
+        print_success "make is already installed"
+    else
+        sudo yum install -y make
+        print_success "make installed"
+    fi
+    
+    # Install essential development tools
+    print_status "Installing essential development tools..."
+    sudo yum groupinstall -y "Development Tools"
+    print_success "Development Tools group installed"
+    
+    # Install additional useful utilities
+    sudo yum install -y wget tree vim htop tmux
+    print_success "Additional utilities (wget, tree, vim, htop, tmux) installed"
+    
+    # Upgrade curl to full version for better functionality
+    if ! rpm -q curl-full &> /dev/null; then
+        print_status "Upgrading curl to full version..."
+        sudo yum install -y --allowerasing curl-full libcurl-full
+        print_success "curl upgraded to full version"
+    else
+        print_success "curl-full already installed"
+    fi
 }
 
 # Verify AWS CLI
