@@ -1,0 +1,68 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Simple Terraform Remote State Backend - S3 + DynamoDB (Learning Version)'
+
+Parameters:
+  ProjectName:
+    Type: String
+    Default: 'cloudguru'
+    Description: 'Name of the project'
+    AllowedPattern: '^[a-z0-9-]+$'
+
+Resources:
+  # S3 Bucket for Terraform State (Basic)
+  TerraformStateBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: !Sub '${ProjectName}-terraform-state-${AWS::AccountId}'
+      VersioningConfiguration:
+        Status: Enabled
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-terraform-state'
+        - Key: Purpose
+          Value: 'Terraform Remote State Storage'
+
+  # DynamoDB Table for State Locking (Basic)
+  TerraformLockTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: !Sub '${ProjectName}-terraform-state-${AWS::AccountId}-lock'
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: LockID
+          AttributeType: S
+      KeySchema:
+        - AttributeName: LockID
+          KeyType: HASH
+      Tags:
+        - Key: Name
+          Value: !Sub '${ProjectName}-terraform-state-${AWS::AccountId}-lock'
+        - Key: Purpose
+          Value: 'Terraform State Locking'
+
+Outputs:
+  TerraformStateBucketName:
+    Description: 'S3 Bucket name for Terraform state'
+    Value: !Ref TerraformStateBucket
+
+  TerraformLockTableName:
+    Description: 'DynamoDB table name for Terraform locking'
+    Value: !Ref TerraformLockTable
+
+  TerraformBackendConfig:
+    Description: 'Copy this to your main.tf (updated format)'
+    Value: !Sub |
+      terraform {
+        backend "s3" {
+          bucket         = "${TerraformStateBucket}"
+          key            = "dev/terraform.tfstate"
+          region         = "${AWS::Region}"
+          encrypt        = true
+          use_lockfile   = true
+          dynamodb_table = "${TerraformLockTable}"
+        }
+      }
+
+  Region:
+    Description: 'AWS Region'
+    Value: !Ref AWS::Region

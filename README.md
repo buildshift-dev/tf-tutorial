@@ -2,11 +2,11 @@
 
 ⚠️ **Security Disclaimer**: The security practices depicted in this tutorial may not represent production best practices. The goal is to demonstrate Terraform concepts and ensure compatibility with A Cloud Guru sandbox environments. For production deployments, please review and implement appropriate security measures.
 
-This repository contains **two complete Terraform tutorials** that demonstrate how to create AWS Lambda functions with S3 integration. Both tutorials create the same functionality but use different approaches to teach different aspects of Terraform.
+This repository contains **three complete Terraform tutorials** that demonstrate how to create AWS Lambda functions with S3 integration. All tutorials create the same functionality but use different approaches to teach different aspects of Terraform.
 
 ## 🎯 What You'll Build
 
-Both projects create a serverless system where:
+All projects create a serverless system where:
 - **AWS Lambda Function** runs Python code
 - **S3 Bucket** stores files  
 - **Lambda creates timestamp files** in S3 each time it executes
@@ -79,6 +79,45 @@ cd sample-tf-project
 ./scripts/test-lambda.sh dev
 ```
 
+---
+
+### 🔒 [sample-tf-state-lock/](./sample-tf-state-lock/) - **Remote State with S3 + DynamoDB Locking**
+
+**Perfect for:** Teams and production-ready state management  
+**Time:** 1-2 hours  
+**Structure:** Modular + remote state backend with locking
+
+```
+sample-tf-state-lock/
+├── README.md
+├── infrastructure/
+│   ├── environments/dev/    # Environment isolation with remote state
+│   └── modules/             # Reusable components
+│       ├── lambda/
+│       └── s3/
+├── src/lambda/              # Application code
+├── scripts/                 # Automation tools
+└── .gitignore
+```
+
+**What you'll learn:**
+- ✅ S3 + DynamoDB remote state backend
+- ✅ State locking for team collaboration
+- ✅ Preventing concurrent modifications
+- ✅ Remote state security and versioning
+- ✅ Team workflow best practices
+- ✅ All features from sample-tf-project
+
+**Quick start:**
+```bash
+# First deploy the state backend (see tutorial for details)
+aws cloudformation create-stack --stack-name tf-state-simple --template-body file://terraform-state-simple.yaml
+
+cd sample-tf-state-lock
+./scripts/deploy.sh dev apply
+./scripts/test-lambda.sh dev
+```
+
 ## 🛠 Prerequisites
 
 ### Required
@@ -94,7 +133,7 @@ cd sample-tf-project
 - CloudWatch: Create log groups
 - IAM: Pass existing roles to services (iam:PassRole)
 
-**Note**: You'll create the Lambda execution role manually in the AWS Console (covered in tutorials)
+**Note**: Create the Lambda execution role using CloudFormation to overcome Cloud Guru IAM policy limitations (see `INSTRUCTIONS-IAM-ROLE-SETUP.md` for one-command setup)
 
 ## ⚡ Quick Setup for Cloud9
 
@@ -180,19 +219,24 @@ cd tf-tutorial/sample-tf-project
 # Follow the README.md in that folder
 ```
 
-### Option 3: Do Both (Full Learning Experience)
+### Option 3: Do All Three (Full Learning Experience)
 1. Complete `quick-tf-intro` first to learn fundamentals
 2. Then explore `sample-tf-project` to see production patterns
-3. Compare the approaches to understand when to use each
+3. Finally, try `sample-tf-state-lock` to learn remote state management
+4. Compare all approaches to understand when to use each
 
 ## 📋 Repository Structure
 
 ```
 tf-tutorial/
-├── README.md                    # This file - start here
-├── setup-cloud9.sh             # Basic setup script for Cloud9 environment
-├── setup-cloud9-plus.sh        # Enhanced setup with Docker, .NET, SAM CLI, CDK, Spark
-├── load-aws-creds.sh           # Load AWS credentials from file
+├── README.md                        # This file - start here
+├── INSTRUCTIONS-IAM-ROLE-SETUP.md   # IAM role creation (required for all tutorials)
+├── INSTRUCTIONS-STATE-MGMT-SIMPLE.md # S3 + DynamoDB backend setup (for state-lock tutorial)
+├── terraform-state-simple.yaml     # CloudFormation template for state backend
+├── iam-role-cloudformation.yaml    # CloudFormation template for IAM role
+├── setup-cloud9.sh                 # Basic setup script for Cloud9 environment
+├── setup-cloud9-plus.sh            # Enhanced setup with Docker, .NET, SAM CLI, CDK, Spark
+├── load-aws-creds.sh               # Load AWS credentials from file
 │
 ├── quick-tf-intro/             # 🚀 Beginner Tutorial
 │   ├── README.md               # Complete beginner guide
@@ -202,10 +246,21 @@ tf-tutorial/
 │   ├── lambda_function.py      # Python function with comments
 │   └── .gitignore              # Git ignore rules
 │
-└── sample-tf-project/          # ⚡ Advanced Tutorial  
-    ├── README.md               # Production patterns guide
+├── sample-tf-project/          # ⚡ Advanced Tutorial  
+│   ├── README.md               # Production patterns guide
+│   ├── infrastructure/
+│   │   ├── environments/dev/    # Environment-specific config
+│   │   └── modules/             # Reusable Terraform modules
+│   │       ├── lambda/          # Lambda module
+│   │       └── s3/              # S3 module
+│   ├── src/lambda/              # Application source code
+│   ├── scripts/                 # Deployment automation
+│   └── .gitignore
+│
+└── sample-tf-state-lock/       # 🔒 Remote State Tutorial
+    ├── README.md               # Remote state with S3 + DynamoDB
     ├── infrastructure/
-    │   ├── environments/dev/    # Environment-specific config
+    │   ├── environments/dev/    # Environment config with remote backend
     │   └── modules/             # Reusable Terraform modules
     │       ├── lambda/          # Lambda module
     │       └── s3/              # S3 module
@@ -230,35 +285,48 @@ tf-tutorial/
 - Practice automation scripts
 - See production-ready patterns
 
-### Phase 3: Compare & Contrast
-- Compare the two approaches
-- Understand when to use simple vs modular structures
-- Learn refactoring from simple to complex
+### Phase 3: Remote State Management  
+👉 **Move to `sample-tf-state-lock/`**
+- Learn remote state with S3 + DynamoDB
+- Understand team collaboration workflows
+- Practice state locking and concurrent access prevention
+- Experience production-ready state management
+
+### Phase 4: Compare & Contrast
+- Compare all three approaches
+- Understand when to use simple vs modular vs remote state
+- Learn progression from local to remote state
+- Understand team vs individual development workflows
 
 ## 💡 Key Differences
 
-| Aspect | quick-tf-intro | sample-tf-project |
-|--------|----------------|-------------------|
-| **Complexity** | Simple | Advanced |
-| **File Structure** | Flat (root level) | Modular (nested) |
-| **Best for** | Learning basics | Production use |
-| **Time Investment** | 30-45 minutes | 1-2 hours |
-| **Reusability** | Limited | High |
-| **Environments** | Single | Multi (dev/staging/prod) |
-| **Automation** | Manual commands | Scripts provided |
+| Aspect | quick-tf-intro | sample-tf-project | sample-tf-state-lock |
+|--------|----------------|-------------------|---------------------|
+| **Complexity** | Simple | Advanced | Advanced + Remote State |
+| **File Structure** | Flat (root level) | Modular (nested) | Modular + Backend Config |
+| **State Management** | Local files | Local files | S3 + DynamoDB Remote |
+| **Team Collaboration** | Individual only | Individual only | Team-ready |
+| **State Locking** | None | None | DynamoDB locking |
+| **Best for** | Learning basics | Production structure | Production + Teams |
+| **Time Investment** | 30-45 minutes | 1-2 hours | 1-2 hours + setup |
+| **Reusability** | Limited | High | High |
+| **Environments** | Single | Multi (dev/staging/prod) | Multi + Remote State |
+| **Automation** | Manual commands | Scripts provided | Scripts + Backend Setup |
 
 ## 🔧 What Gets Created
 
-Both tutorials create these AWS resources:
+All tutorials create these AWS resources:
 - **S3 Bucket** with security settings (versioning, encryption, lifecycle)
 - **Lambda Function** (Python 3.11 runtime) 
 - **CloudWatch Log Group** for monitoring
 
-**Prerequisites**: You'll manually create an IAM role for Lambda execution (instructions included)
+**Prerequisites**: Create the Lambda execution role using CloudFormation (see `INSTRUCTIONS-IAM-ROLE-SETUP.md`)
+
+**Additional for sample-tf-state-lock**: S3 bucket and DynamoDB table for remote state (deployed via CloudFormation)
 
 ## 🧪 Testing Your Deployment
 
-Both projects include testing instructions:
+All projects include testing instructions:
 - AWS CLI commands to invoke Lambda
 - Methods to verify S3 file creation
 - Console-based testing options
